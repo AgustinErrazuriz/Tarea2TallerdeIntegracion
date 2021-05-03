@@ -16,6 +16,10 @@ class Artists(APIView):
 
     def post(self, request):
         datos=request.data
+        if type(datos['name']) is not str:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if type(datos['age']) is not int:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         name=datos['name']
         id=b64encode(name.encode()).decode('utf-8')
         id=id[0:22]
@@ -24,20 +28,26 @@ class Artists(APIView):
         tracks=f'http://localhost:8000/artists/{id}/tracks'
         self=f'http://localhost:8000/artists/{id}'
         nuevo_artista = Artistas(id=id, name=name, age=age, albums=albums, tracks=tracks)
+        if not nuevo_artista:
+            return Response(status=status.HTTP_409_CONFLICT)
         nuevo_artista.self = self
         nuevo_artista.save()
         serializer = ArtistasSerializer(nuevo_artista)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class Artist_id(APIView):
 
     def get(self, request, id):
         artista1 = Artistas.objects.get(id=id)
+        if not artista1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ArtistasSerializer(artista1)
         return Response(serializer.data)
 
     def delete(self, request, id):
-        albumes1 = Albumes.objects.filter(artist_id=id)
+        artista1 = Artistas.objects.get(id=id)
+        if not artista1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         for album in albumes1:
             tracks1 = Canciones.objects.filter(album_id=album.id)
             for cancion in tracks1:
@@ -50,15 +60,25 @@ class Artist_id(APIView):
 class Artist_albums(APIView):
 
     def get(self, request, id):
+        artista1 = Artistas.objects.get(id=id)
+        if not artista1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         albumes1 = Albumes.objects.filter(artist_id=id)
         serializer = AlbumesSerializer(albumes1, many=True)
         return Response(serializer.data)
 
     def post(self, request, id):
         datos=request.data
+        if type(datos['name']) is not str:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if type(datos['genre']) is not str:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        artist_id=id
+        artista = Artistas.objects.get(id=artist_id)
+        if not artista:
+            return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         name=datos['name']
         nombre=f'{name}:{id}'
-        artist_id=id
         id_album=b64encode(nombre.encode()).decode('utf-8')
         id_album=id_album[0:22]
         genre=datos['genre']
@@ -66,14 +86,19 @@ class Artist_albums(APIView):
         tracks=f'http://localhost:8000/albums/{id_album}/tracks'
         self=f'http://localhost:8000/albums/{id_album}'
         nuevo_album = Albumes(id=id_album, artist_id=artist_id, name=name, genre=genre, artist=artist, tracks=tracks)
+        if not nuevo_album:
+            return Response(status=status.HTTP_409_CONFLICT)
         nuevo_album.self = self
         nuevo_album.save()
         serializer = AlbumesSerializer(nuevo_album)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class Artist_tracks(APIView):
 
     def get(self, request, id):
+        artista1 = Artistas.objects.get(id=id)
+        if not artista1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         albumes1 = Albumes.objects.filter(artist_id=id)
         todas = []
         for album in albumes1:
@@ -86,13 +111,16 @@ class Artist_tracks(APIView):
 class Artist_play(APIView):
 
     def put(self, request, id):
+        artista1 = Artistas.objects.get(id=id)
+        if not artista1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         albumes1 = Albumes.objects.filter(artist_id=id)
         for album in albumes1:
             canciones1 = Canciones.objects.filter(album_id=album.id)
             for cancion in canciones1:
                 cancion.times_played += 1
                 cancion.save()
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_200_OK)
 
 class Albums(APIView):
 
@@ -105,29 +133,43 @@ class Album_id(APIView):
 
     def get(self, request, id):
         album1 = Albumes.objects.get(id=id)
+        if not album1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = AlbumesSerializer(album1)
         return Response(serializer.data)
 
     def delete(self, request, id):
+        album1 = Albumes.objects.get(id=id)
+        if not album1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         tracks1 = Canciones.objects.filter(album_id=id)
         for cancion in tracks1:
             cancion.delete()
-        album = Albumes.objects.filter(id=id)
         album.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class Album_tracks(APIView):
 
     def get(self, request, id):
+        album1 = Albumes.objects.get(id=id)
+        if not album1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         tracks1 = Canciones.objects.filter(album_id=id)
         serializer = CancionesSerializer(tracks1, many=True)
         return Response(serializer.data)
 
     def post(self, request, id):
         datos=request.data
+        if type(datos['name']) is not str:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if type(datos['duration']) is not float:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        album_id=id
+        album = Albumes.objects.get(id=album_id)
+        if not album:
+            return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         name=datos['name']
         nombre=f'{name}:{id}'
-        album_id=id
         id_cancion=b64encode(nombre.encode()).decode('utf-8')
         id_cancion=id_cancion[0:22]
         duration=datos['duration']
@@ -138,19 +180,24 @@ class Album_tracks(APIView):
         album=f'http://localhost:8000/albums/{album_id}'
         self=f'http://localhost:8000/tracks/{id_cancion}'
         nueva_cancion = Canciones(id=id_cancion, album_id=album_id, name=name, duration=duration, times_played=times_played, artist=artist, album=album)
+        if not nueva_cancion:
+            return Response(status=status.HTTP_409_CONFLICT)
         nueva_cancion.self = self
         nueva_cancion.save()
         serializer = CancionesSerializer(nueva_cancion)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class Album_play(APIView):
 
     def put(self, request, id):
+        album1 = Albumes.objects.get(id=id)
+        if not album1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         tracks1 = Canciones.objects.filter(album_id=id)
         for cancion in tracks1:
             cancion.times_played += 1
             cancion.save()
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_200_OK)
 
 class Tracks(APIView):
 
@@ -162,11 +209,17 @@ class Tracks(APIView):
 class Track_id(APIView):
 
     def get(self, request, id):
+        track1 = Canciones.objects.get(id=id)
+        if not track1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         cancion1 = Canciones.objects.get(id=id)
         serializer = CancionesSerializer(cancion1)
         return Response(serializer.data)
 
     def delete(self, request, id):
+        track1 = Canciones.objects.get(id=id)
+        if not track1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         cancion1 = Canciones.objects.get(id=id)
         cancion1.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -174,8 +227,11 @@ class Track_id(APIView):
 class Track_play(APIView):
 
     def put(self, request, id):
+        track1 = Canciones.objects.get(id=id)
+        if not track1:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         cancion = Canciones.objects.get(id=id)
         cancion.times_played += 1
         cancion.save()
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_200_OK)
     
