@@ -143,7 +143,7 @@ class Album_id(APIView):
         album = Albumes.objects.filter(id=id)
         if len(album) == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = AlbumesSerializer(album)
+        serializer = AlbumesSerializer(album, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, id):
@@ -225,7 +225,7 @@ class Track_id(APIView):
         if len(track) == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
         cancion = Canciones.objects.get(id=id)
-        serializer = CancionesSerializer(cancion)
+        serializer = CancionesSerializer(cancion, many=True)
         return Response(serializer.data)
 
     def delete(self, request, id):
