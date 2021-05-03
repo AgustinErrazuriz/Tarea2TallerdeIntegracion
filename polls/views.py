@@ -16,7 +16,7 @@ class Artists(APIView):
 
     def post(self, request):
         datos=request.data
-        if not 'name' in datos.keys() and not 'age' in datos.keys():
+        if not 'name' in datos.keys() or not 'age' in datos.keys():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         if datos['name'] == '':
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -75,7 +75,7 @@ class Artist_albums(APIView):
 
     def post(self, request, id):
         datos=request.data
-        if not 'name' in datos.keys() and not 'genre' in datos.keys():
+        if not 'name' in datos.keys() or not 'genre' in datos.keys():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         if datos['name'] == '':
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -172,7 +172,7 @@ class Album_tracks(APIView):
 
     def post(self, request, id):
         datos=request.data
-        if not 'name' in datos.keys() and not 'duration' in datos.keys():
+        if not 'name' in datos.keys() or not 'duration' in datos.keys():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         if datos['name'] == '':
             return Response(status=status.HTTP_400_BAD_REQUEST)
