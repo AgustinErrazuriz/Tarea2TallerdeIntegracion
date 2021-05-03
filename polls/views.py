@@ -53,7 +53,6 @@ class Artist_id(APIView):
             for cancion in tracks1:
                 cancion.delete()
             album.delete()
-        artista1 = Artistas.objects.get(id=id)
         artista1.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -214,7 +213,7 @@ class Track_id(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         cancion1 = Canciones.objects.get(id=id)
         serializer = CancionesSerializer(cancion1)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data)
 
     def delete(self, request, id):
         track1 = Canciones.objects.filter(id=id)
