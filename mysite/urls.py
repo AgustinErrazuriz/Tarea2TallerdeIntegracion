@@ -14,15 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from rest_framework.urlpatterns import format_suffix_patterns
 from polls import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('artists/', views.Artists.as_view()),
-    path('albums/', views.Albums.as_view()),
-    path('tracks/', views.Tracks.as_view()),
+    path(r'artists/', views.Artists.as_view()),
+    path(r'albums/', views.Albums.as_view()),
+    path(r'tracks/', views.Tracks.as_view()),
     path('artists/<str:id>', views.Artist_id.as_view()),
     path('albums/<str:id>', views.Album_id.as_view()),
     path('tracks/<str:id>', views.Track_id.as_view()),

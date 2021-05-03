@@ -27,7 +27,7 @@ class Artists(APIView):
         albums=f'http://localhost:8000/artists/{id}/albums'
         tracks=f'http://localhost:8000/artists/{id}/tracks'
         self=f'http://localhost:8000/artists/{id}'
-        nuevo_artista = Artistas(id=id, name='hola', age=age, albums=albums, tracks=tracks)
+        nuevo_artista = Artistas(id=id, name=name, age=age, albums=albums, tracks=tracks)
         if not nuevo_artista:
             return Response(status=status.HTTP_409_CONFLICT)
         nuevo_artista.self = self
@@ -45,7 +45,7 @@ class Artist_id(APIView):
         return Response(serializer.data)
 
     def delete(self, request, id):
-        artista1 = Artistas.objects.filter(id=id)
+        artista1 = Artistas.objects.get(id=id)
         if not artista1:
             return Response(status=status.HTTP_404_NOT_FOUND)
         for album in albumes1:
