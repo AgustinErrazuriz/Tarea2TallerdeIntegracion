@@ -45,7 +45,7 @@ class Artist_id(APIView):
         return Response(serializer.data)
 
     def delete(self, request, id):
-        artista1 = Artistas.objects.get(id=id)
+        artista1 = Artistas.objects.filter(id=id)
         if not artista1:
             return Response(status=status.HTTP_404_NOT_FOUND)
         for album in albumes1:
