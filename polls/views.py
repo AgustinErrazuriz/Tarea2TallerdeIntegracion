@@ -16,21 +16,21 @@ class Artists(APIView):
 
     def post(self, request):
         datos=request.data
-        if type(datos['name']) is not str:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        if type(datos['age']) is not int:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
         name=datos['name']
+        age=datos['age']
+        if type(name) is not str:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if type(age) is not int:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         id=b64encode(name.encode()).decode('utf-8')
         id=id[0:22]
-        age=datos['age']
         albums=f'http://localhost:8000/artists/{id}/albums'
         tracks=f'http://localhost:8000/artists/{id}/tracks'
-        self=f'http://localhost:8000/artists/{id}'
+        selfi=f'http://localhost:8000/artists/{id}'
         nuevo_artista = Artistas(id=id, name=name, age=age, albums=albums, tracks=tracks)
         if not nuevo_artista:
             return Response(status=status.HTTP_409_CONFLICT)
-        nuevo_artista.self = self
+        nuevo_artista.self = selfi
         nuevo_artista.save()
         serializer = ArtistasSerializer(nuevo_artista)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
