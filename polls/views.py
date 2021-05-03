@@ -41,7 +41,7 @@ class Artist_id(APIView):
         artista = Artistas.objects.all().filter(id=id)
         if len(artista) == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = ArtistasSerializer(artista1)
+        serializer = ArtistasSerializer(artista)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, id):
