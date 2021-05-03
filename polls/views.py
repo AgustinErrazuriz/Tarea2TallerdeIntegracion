@@ -29,9 +29,11 @@ class Artists(APIView):
         albums=f'http://mitarea2tallerdeintegracion.herokuapp.com/artists/{id}/albums'
         tracks=f'http://mitarea2tallerdeintegracion.herokuapp.com/artists/{id}/tracks'
         selfi=f'http://mitarea2tallerdeintegracion.herokuapp.com/artists/{id}'
+        if len(Artistas.objects.filter(id=id))>0:
+            artista = Artistas.objects.get(id=id)
+            serializer = ArtistasSerializer(artista)
+            return Response(serializer.data, status=status.HTTP_409_CONFLICT)
         nuevo_artista = Artistas(id=id, name=name, age=age, albums=albums, tracks=tracks)
-        if not nuevo_artista:
-            return Response(status=status.HTTP_409_CONFLICT)
         nuevo_artista.self = selfi
         nuevo_artista.save()
         serializer = ArtistasSerializer(nuevo_artista)
@@ -89,9 +91,11 @@ class Artist_albums(APIView):
         artist=f'http://mitarea2tallerdeintegracion.herokuapp.com/artists/{artist_id}'
         tracks=f'http://mitarea2tallerdeintegracion.herokuapp.com/albums/{id_album}/tracks'
         self=f'http://mitarea2tallerdeintegracion.herokuapp.com/albums/{id_album}'
+        if len(Albumes.objects.filter(id=id_album))>0:
+            album = Albumes.objects.get(id=id_album)
+            serializer = AlbumesSerializer(album)
+            return Response(serializer.data, status=status.HTTP_409_CONFLICT)
         nuevo_album = Albumes(id=id_album, artist_id=artist_id, name=name, genre=genre, artist=artist, tracks=tracks)
-        if not nuevo_album:
-            return Response(status=status.HTTP_409_CONFLICT)
         nuevo_album.self = self
         nuevo_album.save()
         serializer = AlbumesSerializer(nuevo_album)
@@ -185,9 +189,11 @@ class Album_tracks(APIView):
         artist=f'http://mitarea2tallerdeintegracion.herokuapp.com/artists/{artist_id}'
         album=f'http://mitarea2tallerdeintegracion.herokuapp.com/albums/{album_id}'
         self=f'http://mitarea2tallerdeintegracion.herokuapp.com/tracks/{id_cancion}'
+        if len(Canciones.objects.filter(id=id_cancion))>0:
+            cancion = Canciones.objects.get(id=id_cancion)
+            serializer = CancionesSerializer(cancion)
+            return Response(serializer.data, status=status.HTTP_409_CONFLICT)
         nueva_cancion = Canciones(id=id_cancion, album_id=album_id, name=name, duration=duration, times_played=times_played, artist=artist, album=album)
-        if not nueva_cancion:
-            return Response(status=status.HTTP_409_CONFLICT)
         nueva_cancion.self = self
         nueva_cancion.save()
         serializer = CancionesSerializer(nueva_cancion)
