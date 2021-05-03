@@ -14,7 +14,7 @@ class Artists(APIView):
         serializer = ArtistasSerializer(artista1, many=True)
         return Response(serializer.data)
 
-    def post(self, request, id):
+    def post(self, request):
         datos=request.data
         if type(datos['name']) is not str:
             return Response(status=status.HTTP_400_BAD_REQUEST)
