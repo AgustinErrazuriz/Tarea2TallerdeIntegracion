@@ -221,10 +221,9 @@ class Tracks(APIView):
 class Track_id(APIView):
 
     def get(self, request, id):
-        track = Canciones.objects.filter(id=id)
-        if len(track) == 0:
-            return Response(status=status.HTTP_404_NOT_FOUND)
         cancion = Canciones.objects.filter(id=id)
+        if len(cancion) == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = CancionesSerializer(cancion, many=True)
         return Response(serializer.data[0], status=status.HTTP_200_OK)
 
