@@ -74,8 +74,8 @@ class Artist_albums(APIView):
         if type(datos['genre']) is not str:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         artist_id=id
-        artista = Artistas.objects.get(id=artist_id)
-        if not artista:
+        artista = Artistas.objects.filter(id=artist_id)
+        if len(artista) == 0:
             return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         name=datos['name']
         nombre=f'{name}:{id}'
