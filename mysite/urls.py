@@ -20,9 +20,9 @@ from polls import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(r'artists/', views.Artists.as_view()),
-    path(r'albums/', views.Albums.as_view()),
-    path(r'tracks/', views.Tracks.as_view()),
+    path(r'artists', views.Artists.as_view()),
+    path(r'albums', views.Albums.as_view()),
+    path(r'tracks', views.Tracks.as_view()),
     path('artists/<str:id>', views.Artist_id.as_view()),
     path('albums/<str:id>', views.Album_id.as_view()),
     path('tracks/<str:id>', views.Track_id.as_view()),

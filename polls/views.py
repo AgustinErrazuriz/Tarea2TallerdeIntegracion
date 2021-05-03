@@ -24,9 +24,9 @@ class Artists(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         id=b64encode(name.encode()).decode('utf-8')
         id=id[0:22]
-        albums=f'http://localhost:8000/artists/{id}/albums'
-        tracks=f'http://localhost:8000/artists/{id}/tracks'
-        selfi=f'http://localhost:8000/artists/{id}'
+        albums=f'http://mitarea2tallerdeintegracion.herokuapp.com/artists/{id}/albums'
+        tracks=f'http://mitarea2tallerdeintegracion.herokuapp.com/artists/{id}/tracks'
+        selfi=f'http://mitarea2tallerdeintegracion.herokuapp.com/artists/{id}'
         nuevo_artista = Artistas(id=id, name=name, age=age, albums=albums, tracks=tracks)
         if not nuevo_artista:
             return Response(status=status.HTTP_409_CONFLICT)
@@ -82,9 +82,9 @@ class Artist_albums(APIView):
         id_album=b64encode(nombre.encode()).decode('utf-8')
         id_album=id_album[0:22]
         genre=datos['genre']
-        artist=f'http://localhost:8000/artists/{artist_id}'
-        tracks=f'http://localhost:8000/albums/{id_album}/tracks'
-        self=f'http://localhost:8000/albums/{id_album}'
+        artist=f'http://mitarea2tallerdeintegracion.herokuapp.com/artists/{artist_id}'
+        tracks=f'http://mitarea2tallerdeintegracion.herokuapp.com/albums/{id_album}/tracks'
+        self=f'http://mitarea2tallerdeintegracion.herokuapp.com/albums/{id_album}'
         nuevo_album = Albumes(id=id_album, artist_id=artist_id, name=name, genre=genre, artist=artist, tracks=tracks)
         if not nuevo_album:
             return Response(status=status.HTTP_409_CONFLICT)
@@ -176,9 +176,9 @@ class Album_tracks(APIView):
         times_played=0
         album1 = Albumes.objects.get(id=album_id)
         artist_id=album1.artist_id
-        artist=f'http://localhost:8000/artists/{artist_id}'
-        album=f'http://localhost:8000/albums/{album_id}'
-        self=f'http://localhost:8000/tracks/{id_cancion}'
+        artist=f'http://mitarea2tallerdeintegracion.herokuapp.com/artists/{artist_id}'
+        album=f'http://mitarea2tallerdeintegracion.herokuapp.com/albums/{album_id}'
+        self=f'http://mitarea2tallerdeintegracion.herokuapp.com/tracks/{id_cancion}'
         nueva_cancion = Canciones(id=id_cancion, album_id=album_id, name=name, duration=duration, times_played=times_played, artist=artist, album=album)
         if not nueva_cancion:
             return Response(status=status.HTTP_409_CONFLICT)
