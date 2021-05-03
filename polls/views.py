@@ -225,8 +225,8 @@ class Track_id(APIView):
         if len(track) == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
         cancion = Canciones.objects.get(id=id)
-        serializer = CancionesSerializer(cancion, many=True)
-        return Response(serializer.data[0], status=status.HTTP_200_OK)
+        serializer = CancionesSerializer(cancion)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, id):
         track = Canciones.objects.filter(id=id)
