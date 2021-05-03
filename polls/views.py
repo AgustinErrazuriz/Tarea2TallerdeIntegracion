@@ -27,7 +27,7 @@ class Artists(APIView):
         albums=f'http://localhost:8000/artists/{id}/albums'
         tracks=f'http://localhost:8000/artists/{id}/tracks'
         self=f'http://localhost:8000/artists/{id}'
-        nuevo_artista = Artistas(id=id, name=name, age=age, albums=albums, tracks=tracks)
+        nuevo_artista = Artistas(id=id, name='hola', age=age, albums=albums, tracks=tracks)
         if not nuevo_artista:
             return Response(status=status.HTTP_409_CONFLICT)
         nuevo_artista.self = self
