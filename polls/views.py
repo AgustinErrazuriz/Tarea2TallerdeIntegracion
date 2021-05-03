@@ -175,8 +175,8 @@ class Album_tracks(APIView):
         if type(datos['duration']) is not float:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         album_id=id
-        album = Albumes.objects.get(id=album_id)
-        if not album:
+        album = Albumes.objects.filter(id=album_id)
+        if len(album)==0:
             return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         name=datos['name']
         nombre=f'{name}:{id}'
