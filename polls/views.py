@@ -38,7 +38,7 @@ class Artists(APIView):
 class Artist_id(APIView):
 
     def get(self, request, id):
-        artista = Artistas.objects.filter(id=id)
+        artista = Artistas.objects.all().filter(id=id)
         if len(artista) == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ArtistasSerializer(artista1)
