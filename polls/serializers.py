@@ -5,16 +5,16 @@ class ArtistasSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Artistas
-        fields='__all__'
+        fields=('id','name','age','albums','tracks','self')
 
 class AlbumesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Albumes
-        fields='__all__'
+        fields=('id','artist_id','name','genre','artists','tracks','self')
 
 class CancionesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Canciones
-        fields='__all__'
+        fields=('id','album_id','name','duration','times_played','artists','albums','self')
